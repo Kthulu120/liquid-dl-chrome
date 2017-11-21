@@ -1,0 +1,139 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+
+<head>
+  <title>Liquid-dl</title>
+  <style type="text/css">
+    body {
+      margin: 10px;
+      white-space: nowrap;
+    }
+
+    h1 {
+      font-size: 15px;
+    }
+
+    #container {
+      align-items: center;
+      display: flex;
+      justify-content: space-around;
+      flex-direction: column;
+      align-content: center;
+    }
+  </style>
+
+  <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+
+</head>
+
+<body>
+  <style>
+    body {
+      font-family: Arial;
+    }
+
+    .siimple-alert {
+      display: block;
+      width: calc(100% - 30px);
+      font-family: Montserrat, sans-serif;
+      color: #57607c;
+      line-height: 20px;
+      border-radius: 5px;
+      background-color: #ebf2fa;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-top: 10px;
+      margin-bottom: 10px
+    }
+
+    .siimple-alert--warning {
+      background-color: #ffbf00!important;
+      color: #fff!important
+    }
+
+    .siimple-alert--error {
+      background-color: #ff1a4f!important;
+      color: #fff!important
+    }
+
+    .siimple-alert--done {
+      background-color: #1add9f!important;
+      color: #fff!important
+    }
+
+    .siimple-alert--info {
+      background-color: #4894f0!important;
+      color: #fff!important
+    }
+  </style>
+  </head>
+
+  <body>
+
+    <p>Select A Tab</p>
+
+    <div class="tab">
+      <button class="tablinks">Settings</button>
+      <button class="tablinks">SCDL</button>
+      <button class="tablinks">YTDL</button>
+    </div>
+
+    <div id="Settings" class="tabcontent">
+      <div class="row">
+        <span class="column">IP Address:</span>
+        <input id="liquid-ip-addy" placeholder="Insert IP address" type="text">
+
+        <span class="column">API Key:</span>
+        <input id="liquid-api-key" placeholder="Insert API Key" type="text">
+        <div class="column-100 button button-outline" id="save-settings">Save Settings</div>
+
+      </div>
+    </div>
+
+    <div id="SCDL" class="tabcontent">
+      <div class="row">
+        <label for="scdl-url-field">URL</label>
+        <input type="text" placeholder="Soundcloud URL" id="scdl-url-field">
+        <label for="scdl-output-field">Output Path</label>
+        <input type="text" placeholder="Output Path" id="scdl-output-field">
+          <div class="float-right">
+            <input type="checkbox" id="all-tracks">
+            <label class="label-inline" for="all-tracks">DL All User Tracks</label>
+          </div>
+          <div class="column-100 button button-outline" id="scdl-submit">Download</div>
+
+      </div>
+
+
+    </div>
+
+    <div id="YTDL" class="tabcontent">
+      <div class="row">
+        <label for="ytdl-url-field">URL</label>
+        <input type="text" placeholder="URL" id="ytdl-url-field">
+        <label for="ytdl-output-field">Output Folder</label>
+        <input type="text" placeholder="Output Path" id="ytdl-output-field">
+        <input type="radio" id="ytdl-make-folder">Make Folder For Videos</input>
+      </div>
+    </div>
+
+
+  </body>
+  <script src="popup.js"></script>
+
+
+</html>
