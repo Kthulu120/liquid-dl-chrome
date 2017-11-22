@@ -1,25 +1,23 @@
-/*!
- * Liquid-dl Chrome Extension
- *
- * Copyright (c) 2017 Troy Smith
- * Licensed under the MIT license
- */
 
-body {
+
+#liquid-dl-body {
   font-family: Arial;
 }
 
-body {
+#liquid-dl-body {
   margin: 10px;
   white-space: nowrap;
+  min-width: 150px
 }
 
-h1 {
+#liquid-dl-body  h1 {
   font-size: 15px;
 }
 
 .siimple-alert {
   display: block;
+  font-weight: 900;
+  font-size: 1rem
   width: calc(100% - 30px);
   font-family: Montserrat, sans-serif;
   color: #57607c;
@@ -59,4 +57,5 @@ h1 {
   padding: 5px;
   border-radius: 75%;
   margin-left: 40%;
+  float: right;
 }

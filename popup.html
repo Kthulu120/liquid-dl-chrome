@@ -10,7 +10,12 @@
   <title>Liquid-dl</title>
 
 
-
+  <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
   <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="milligram.css">
@@ -20,7 +25,7 @@
 <body>
   </head>
 
-  <body>
+  <body id="liquid-dl-body">
     <div class="row">
       <div class="column-25">
         <p>Liquid-dl: Select A Tab <span id="notification-counter"> 0 </span></p>

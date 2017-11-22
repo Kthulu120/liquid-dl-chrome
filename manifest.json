@@ -9,20 +9,7 @@
     "default_icon": "liq_icon.png",
     "default_popup": "popup.html"
   },
-  "content_scripts":
-    [{
-        "css": [
-            "milligram.css",
-            "index.css"
-        ],
-        "js": [
-            "jquery.js",
-            "popup.js"
-        ],
-        "matches": [ "http://*/*", "https://*/*"]
-    }],
   "permissions": [
-    "filesystem",
     "activeTab",
     "storage",
     "webRequest",
