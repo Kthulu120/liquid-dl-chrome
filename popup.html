@@ -34,7 +34,7 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-  <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+  <link rel="stylesheet" href="index.css">
 
 </head>
 
@@ -60,11 +60,6 @@
       margin-bottom: 10px
     }
 
-    .siimple-alert--warning {
-      background-color: #ffbf00!important;
-      color: #fff!important
-    }
-
     .siimple-alert--error {
       background-color: #ff1a4f!important;
       color: #fff!important
@@ -79,12 +74,20 @@
       background-color: #4894f0!important;
       color: #fff!important
     }
+    #liq-message-prompt{
+      text-align: center;
+    }
   </style>
   </head>
 
   <body>
+<div class="row">
+  <div class="column-100">
+    <p>Liquid-dl: Select A Tab</p>
+    <p class="siimple-alert--info" id="liq-message-prompt"></p>
+  </div>
 
-    <p>Select A Tab</p>
+  </div>
 
     <div class="tab">
       <button class="tablinks">Settings</button>
@@ -95,12 +98,13 @@
     <div id="Settings" class="tabcontent">
       <div class="row">
         <span class="column">IP Address:</span>
-        <input id="liquid-ip-addy" placeholder="Insert IP address" type="text">
+        <input id="liq-ip-addy" placeholder="Insert IP address" type="text">
 
         <span class="column">API Key:</span>
-        <input id="liquid-api-key" placeholder="Insert API Key" type="text">
-        <div class="column-100 button button-outline" id="save-settings">Save Settings</div>
-
+        <input id="liq-api-key" placeholder="Insert API Key" type="text">
+        <span class="column">Default Directory:</span>
+        <input type="text" placeholder="Default Directory" id="liq-default-directory">
+        <div class="column-100 button button-outline" id="liq-save-settings">Save Settings</div>
       </div>
     </div>
 
@@ -110,11 +114,11 @@
         <input type="text" placeholder="Soundcloud URL" id="scdl-url-field">
         <label for="scdl-output-field">Output Path</label>
         <input type="text" placeholder="Output Path" id="scdl-output-field">
-          <div class="float-right">
-            <input type="checkbox" id="all-tracks">
-            <label class="label-inline" for="all-tracks">DL All User Tracks</label>
-          </div>
-          <div class="column-100 button button-outline" id="scdl-submit">Download</div>
+        <div class="float-right">
+          <input type="checkbox" id="all-tracks">
+          <label class="label-inline" for="all-tracks">DL All User Tracks</label>
+        </div>
+        <div class="column-100 button button-outline" id="scdl-submit">Download</div>
 
       </div>
 
@@ -126,14 +130,18 @@
         <label for="ytdl-url-field">URL</label>
         <input type="text" placeholder="URL" id="ytdl-url-field">
         <label for="ytdl-output-field">Output Folder</label>
-        <input type="text" placeholder="Output Path" id="ytdl-output-field">
-        <input type="radio" id="ytdl-make-folder">Make Folder For Videos</input>
+        <div class="float-right">
+          <input type="text" placeholder="Output Path" id="ytdl-output-field">
+          <input type="radio" id="ytdl-make-folder">Make Folder For Videos</input>
+          <div class="column-100 button button-outline" id="scdl-submit">Download</div>
+
+        </div>
       </div>
     </div>
 
+    <script src="popup.js"></script>
 
   </body>
-  <script src="popup.js"></script>
 
 
 </html>

@@ -64,6 +64,7 @@ function changeBackgroundColor(color) {
   });
 }
 
+
 /**
  * Gets the saved background color for url.
  *
@@ -79,6 +80,31 @@ function getSavedBackgroundColor(url, callback) {
     callback(chrome.runtime.lastError ? null : items[url]);
   });
 }
+
+saveLiquidDLSetting = () => {
+  const ip = document.getElementById('liq-ip-addy').value;
+  const apiKey = document.getElementById('liq-api-key').value;
+  const defaultDir = document.getElementById('liq-default-directory').value;
+  const message_prompt = document.getElementById('liq-message-prompt');
+
+  const values = {
+    apiKey: apiKey,
+    ip_address: ip,
+    default_dir: defaultDir
+  }
+  chrome.storage.sync.set({
+    'liq_settings': values
+  }, function() {
+    // Notify that we saved.
+    message_prompt.innerHTML = 'Settings saved';
+    window.setTimeout(() => {message_prompt.innerHTML = ''}, 5000);
+
+  });
+
+
+
+}
+
 
 /**
  * Sets the given background color for url.
@@ -118,27 +144,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     var liq_contents = document.getElementsByClassName("tabcontent");
 
-    for (var s = 0; s < liq_contents.length; s++){
+    for (var s = 0; s < liq_contents.length; s++) {
       liq_contents[s].style.display = 'none';
     }
 
     var liq_tabs = document.getElementsByClassName('tablinks');
-
-    for (var s = 0; s < liq_tabs.length; s++){
+    document.getElementById('liq-save-settings').addEventListener('click', () => {
+      saveLiquidDLSetting();
+    });
+    // Add an EventListener to each tab so we can create a display
+    for (var s = 0; s < liq_tabs.length; s++) {
       liq_tabs[s].addEventListener('click', (event) => {
+        //  Get the Name of The Tab
         var cityName = event.srcElement.innerHTML;
         console.log(event);
-        console.log(this);
         var i, tabcontent, tablinks;
+        // Get Content Tabs
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
+          // Set The Content of the Tabs to display to none
           tabcontent[i].style.display = "none";
         }
         tablinks = document.getElementsByClassName("tablinks");
         for (i = 0; i < tablinks.length; i++) {
           tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
+        // Set Display To Flex, Therefore showing the content of the tab
         document.getElementById(cityName).style.display = "flex";
+        // Give Clicked Tab a className of active
         event.currentTarget.className += " active";
       });
     }
@@ -151,5 +184,27 @@ document.addEventListener('DOMContentLoaded', () => {
       changeBackgroundColor(dropdown.value);
       saveBackgroundColor(url, dropdown.value);
     });
+
+
+
   });
+});
+
+
+
+/**
+* Sets the initial value of the inputs while 
+*/
+chrome.storage.sync.get('liq_settings', function(data) {
+  // Notify that we saved.
+  if("liq_settings" in data){
+    console.log(data);
+    document.getElementById('liq-ip-addy').value = data.liq_settings.ip_address;
+    document.getElementById('liq-api-key').value = data.liq_settings.apiKey;
+    document.getElementById('liq-default-directory').value = data.liq_settings.default_dir;
+
+  }else{
+    document.getElementById('liq-message-prompt').innerHTML = "Please Set Your Settings"
+    window.setTimeout(() => {message_prompt.innerHTML = ''}, 6000)
+  }
 });
