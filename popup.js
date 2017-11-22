@@ -25,46 +25,22 @@ function getCurrentTabUrl(callback) {
     var tab = tabs[0];
 
     // A tab is a plain object that provides information about the tab.
-    // See https://developer.chrome.com/extensions/tabs#type-Tab
     var url = tab.url;
 
     // tab.url is only available if the "activeTab" permission is declared.
-    // If you want to see the URL of other tabs (e.g. after removing active:true
-    // from |queryInfo|), then the "tabs" permission is required to see their
-    // "url" properties.
     console.assert(typeof url == 'string', 'tab.url should be a string');
 
     callback(url);
   });
-
-  // Most methods of the Chrome extension APIs are asynchronous. This means that
-  // you CANNOT do something like this:
-  //
-  // var url;
-  // chrome.tabs.query(queryInfo, (tabs) => {
-  //   url = tabs[0].url;
-  // });
-  // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-/**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-  var script = 'document.body.style.backgroundColor="' + color + '";';
-  // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-  // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-  // into a page. Since we omit the optional first argument "tabId", the script
-  // is inserted into the active tab of the current window, which serves as the
-  // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
+hideTabPanes = () => {
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    // Set The Content of the Tabs to display to none
+    tabcontent[i].style.display = "none";
+  }
 }
-
-
 /**
  * Gets the saved background color for url.
  *
@@ -97,7 +73,9 @@ saveLiquidDLSetting = () => {
   }, function() {
     // Notify that we saved.
     message_prompt.innerHTML = 'Settings saved';
-    window.setTimeout(() => {message_prompt.innerHTML = ''}, 5000);
+    window.setTimeout(() => {
+      message_prompt.innerHTML = ''
+    }, 5000);
 
   });
 
@@ -106,48 +84,96 @@ saveLiquidDLSetting = () => {
 }
 
 
-/**
- * Sets the given background color for url.
- *
- * @param {string} url URL for which background color is to be saved.
- * @param {string} color The background color to be saved.
- */
-function saveBackgroundColor(url, color) {
-  var items = {};
-  items[url] = color;
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
-  // optional callback since we don't need to perform any action once the
-  // background color is saved.
-  chrome.storage.sync.set(items);
+scdlSubmission = () => {
+
+
+
+
+
+  $.ajax({
+    url: 'http://' + document.getElementById('liq-ip-addy').value + '/liquid-dl/soundcloud-submit' ,
+    type: 'GET',
+    dataType: 'jsonp',
+    "Access-Control-Allow-Origin": "*",
+    data: {
+      operating_system: 'Windows',
+      url: document.getElementById('scdl-url-field').value + "",
+      output_path: document.getElementById('scdl-output-field').value + "",
+      download_artist: false,
+      download_all_tracks_and_reposts: false,
+      download_user_uploads: false,
+      download_favorites: false,
+      download_playlist: false,
+      download_like_and_owned_playlists: false,
+    },
+    error: (err) => {
+      document.getElementById('liq-message-prompt').innerHTML = "Error Occured: " + err.toString();
+    },
+    success: (data) => {
+      document.getElementById('liq-message-prompt').innerHTML = "Download Sent";
+    },
+  });
 }
 
-// This extension loads the saved background color for the current tab if one
-// exists. The user can select a new background color from the dropdown for the
-// current page, and it will be saved as part of the extension's isolated
-// storage. The chrome.storage API is used for this purpose. This is different
-// from the window.localStorage API, which is synchronous and stores data bound
-// to a document's origin. Also, using chrome.storage.sync instead of
-// chrome.storage.local allows the extension data to be synced across multiple
-// user devices.
+ytdlSubmission = () => {
+  var xhr = new XMLHttpRequest();
+  const req_info = {
+    operating_system: 'Windows',
+    apiKey: '123',
+    url: document.getElementById('ytdl-url-field').value,
+    output_path: document.getElementById('ytdl-output-field').value,
+    make_folder:false,
+    new_folder_name: '',
+    is_playlist:false,
+    chosen_formats: ['best']
+  }
+  xhr.open("GET", 'http://' + document.getElementById('liq-ip-addy').value + "/liquid-dl/youtubedl/chrome-extension?" + jQuery.param(req_info), true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      // JSON.parse does not evaluate the attacker's scripts.
+    //  var resp = JSON.parse(xhr.responseText);
+    document.getElementById('liq-message-prompt').innerHTML = xhr.responseText;
+    }
+  }
+
+  console.log(req_info)
+  xhr.send(JSON.stringify(req_info));
+
+
+  $.ajax({
+    url: 'http://' + document.getElementById('liq-ip-addy').value + '/liquid-dl/youtubedl-submit' ,
+    type: 'GET',
+    dataType: 'jsonp',
+    crossDomain:true,
+    data: {
+      operating_system: 'Windows',
+      url: document.getElementById('ytdl-url-field').value + "",
+      output_path: document.getElementById('ytdl-output-field').value + "",
+      make_folder:false,
+      new_folder_name: '',
+      is_playlist:false,
+      chosen_formats: ['best']
+    },
+  });
+}
+
+
+/**
+ * Sets up the initial EventListeners for the application
+ */
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((url) => {
     var dropdown = document.getElementById('dropdown');
 
-    // Load the saved background color for this page and modify the dropdown
-    // value, if needed.
-    getSavedBackgroundColor(url, (savedColor) => {
-      if (savedColor) {
-        changeBackgroundColor(savedColor);
-        dropdown.value = savedColor;
-        console.log(dropdown.value);
-      }
-    });
+    // Grab the contents of all tab panes
     var liq_contents = document.getElementsByClassName("tabcontent");
 
     for (var s = 0; s < liq_contents.length; s++) {
+      // Iterate throught them tab panes and hide them
       liq_contents[s].style.display = 'none';
     }
 
+    // Grab Tab Buttons
     var liq_tabs = document.getElementsByClassName('tablinks');
     document.getElementById('liq-save-settings').addEventListener('click', () => {
       saveLiquidDLSetting();
@@ -157,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
       liq_tabs[s].addEventListener('click', (event) => {
         //  Get the Name of The Tab
         var cityName = event.srcElement.innerHTML;
-        console.log(event);
         var i, tabcontent, tablinks;
         // Get Content Tabs
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -175,17 +200,15 @@ document.addEventListener('DOMContentLoaded', () => {
         event.currentTarget.className += " active";
       });
     }
-
-
-
-    // Ensure the background color is changed and saved when the dropdown
-    // selection changes.
-    dropdown.addEventListener('change', () => {
-      changeBackgroundColor(dropdown.value);
-      saveBackgroundColor(url, dropdown.value);
+    document.getElementById('scdl-submit').addEventListener('click', () => {
+      scdlSubmission();
     });
-
-
+    document.getElementById('ytdl-submit').addEventListener('click', () => {
+      ytdlSubmission();
+    });
+    document.getElementById('liq-save-settings').addEventListener('click', () => {
+      saveLiquidDLSetting();
+    });
 
   });
 });
@@ -193,18 +216,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /**
-* Sets the initial value of the inputs while 
-*/
+ * Sets the initial value of the inputs while
+ */
 chrome.storage.sync.get('liq_settings', function(data) {
   // Notify that we saved.
-  if("liq_settings" in data){
+  if ("liq_settings" in data) {
     console.log(data);
     document.getElementById('liq-ip-addy').value = data.liq_settings.ip_address;
     document.getElementById('liq-api-key').value = data.liq_settings.apiKey;
     document.getElementById('liq-default-directory').value = data.liq_settings.default_dir;
 
-  }else{
+  } else {
+    //Display Message
     document.getElementById('liq-message-prompt').innerHTML = "Please Set Your Settings"
-    window.setTimeout(() => {message_prompt.innerHTML = ''}, 6000)
+    window.setTimeout(() => {
+      message_prompt.innerHTML = ''
+    }, 6000)
   }
 });

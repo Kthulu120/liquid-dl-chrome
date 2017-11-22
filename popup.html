@@ -8,86 +8,26 @@
 
 <head>
   <title>Liquid-dl</title>
-  <style type="text/css">
-    body {
-      margin: 10px;
-      white-space: nowrap;
-    }
 
-    h1 {
-      font-size: 15px;
-    }
 
-    #container {
-      align-items: center;
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      align-content: center;
-    }
-  </style>
 
-  <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-    -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="milligram.css">
 
 </head>
 
 <body>
-  <style>
-    body {
-      font-family: Arial;
-    }
-
-    .siimple-alert {
-      display: block;
-      width: calc(100% - 30px);
-      font-family: Montserrat, sans-serif;
-      color: #57607c;
-      line-height: 20px;
-      border-radius: 5px;
-      background-color: #ebf2fa;
-      padding-top: 15px;
-      padding-bottom: 15px;
-      padding-left: 15px;
-      padding-right: 15px;
-      margin-top: 10px;
-      margin-bottom: 10px
-    }
-
-    .siimple-alert--error {
-      background-color: #ff1a4f!important;
-      color: #fff!important
-    }
-
-    .siimple-alert--done {
-      background-color: #1add9f!important;
-      color: #fff!important
-    }
-
-    .siimple-alert--info {
-      background-color: #4894f0!important;
-      color: #fff!important
-    }
-    #liq-message-prompt{
-      text-align: center;
-    }
-  </style>
   </head>
 
   <body>
-<div class="row">
-  <div class="column-100">
-    <p>Liquid-dl: Select A Tab</p>
-    <p class="siimple-alert--info" id="liq-message-prompt"></p>
-  </div>
-
-  </div>
+    <div class="row">
+      <div class="column-25">
+        <p>Liquid-dl: Select A Tab <span id="notification-counter"> 0 </span></p>
+        <p class="siimple-alert--info" id="liq-message-prompt"></p>
+      </div>
+    </div>
+    </div>
 
     <div class="tab">
       <button class="tablinks">Settings</button>
@@ -97,7 +37,7 @@
 
     <div id="Settings" class="tabcontent">
       <div class="row">
-        <span class="column">IP Address:</span>
+        <span class="column">IP Address (Including Port):</span>
         <input id="liq-ip-addy" placeholder="Insert IP address" type="text">
 
         <span class="column">API Key:</span>
@@ -130,15 +70,17 @@
         <label for="ytdl-url-field">URL</label>
         <input type="text" placeholder="URL" id="ytdl-url-field">
         <label for="ytdl-output-field">Output Folder</label>
+        <input type="text" placeholder="Output Path" id="ytdl-output-field">
         <div class="float-right">
-          <input type="text" placeholder="Output Path" id="ytdl-output-field">
-          <input type="radio" id="ytdl-make-folder">Make Folder For Videos</input>
-          <div class="column-100 button button-outline" id="scdl-submit">Download</div>
+          <input type="checkbox" id="ytdl-make-folder"></input>
+          <label for="ytdl-make-folder" class="label-inline"> Make Folder For Videos</label>
 
         </div>
+        <div class="column-100 button button-outline" id="ytdl-submit">Download</div>
       </div>
     </div>
 
+    <script src="jquery.js"></script>
     <script src="popup.js"></script>
 
   </body>
