@@ -85,47 +85,22 @@ saveLiquidDLSetting = () => {
 
 
 scdlSubmission = () => {
-
-
-
-
-
-  $.ajax({
-    url: 'http://' + document.getElementById('liq-ip-addy').value + '/liquid-dl/soundcloud-submit' ,
-    type: 'GET',
-    dataType: 'jsonp',
-    "Access-Control-Allow-Origin": "*",
-    data: {
-      operating_system: 'Windows',
-      url: document.getElementById('scdl-url-field').value + "",
-      output_path: document.getElementById('scdl-output-field').value + "",
-      download_artist: false,
-      download_all_tracks_and_reposts: false,
-      download_user_uploads: false,
-      download_favorites: false,
-      download_playlist: false,
-      download_like_and_owned_playlists: false,
-    },
-    error: (err) => {
-      document.getElementById('liq-message-prompt').innerHTML = "Error Occured: " + err.toString();
-    },
-    success: (data) => {
-      document.getElementById('liq-message-prompt').innerHTML = "Download Sent";
-    },
-  });
-}
-
-ytdlSubmission = () => {
+  let output_val = document.getElementById('scdl-output-field').value
+  if (output_val === ''){
+    output_val = document.getElementById('liq-default-directory').value
+  }
   var xhr = new XMLHttpRequest();
-  const req_info = {
+  let req_info = {
     operating_system: 'Windows',
-    apiKey: '123',
-    url: document.getElementById('ytdl-url-field').value,
-    output_path: document.getElementById('ytdl-output-field').value,
-    make_folder:false,
-    new_folder_name: '',
-    is_playlist:false,
-    chosen_formats: ['best']
+    apiKey: document.getElementById('liq-api-key').value,
+    url: document.getElementById('scdl-url-field').value,
+    output_path: document.getElementById('scdl-output-field').value,
+    download_artist: document.getElementById("myCheck").checked,
+    download_all_tracks_and_reposts: false,
+    download_user_uploads: false,
+    download_favorites: false,
+    download_playlist: false,
+    download_like_and_owned_playlists: false,
   }
   xhr.open("GET", 'http://' + document.getElementById('liq-ip-addy').value + "/liquid-dl/youtubedl/chrome-extension?" + jQuery.param(req_info), true);
   xhr.onreadystatechange = function() {
@@ -139,22 +114,41 @@ ytdlSubmission = () => {
   console.log(req_info)
   xhr.send(JSON.stringify(req_info));
 
+}
+/**
+* Submits the YTDL form
+*/
+ytdlSubmission = () => {
+  let output_val = document.getElementById('ytdl-output-field').value
+  if (output_val ===""){
+    output_val = document.getElementById('liq-default-directory').value
+    chrome.storage.sync.get('liq_settings', function(data) {
+        output_val = data.liq_settings.default_dir
+    });
 
-  $.ajax({
-    url: 'http://' + document.getElementById('liq-ip-addy').value + '/liquid-dl/youtubedl-submit' ,
-    type: 'GET',
-    dataType: 'jsonp',
-    crossDomain:true,
-    data: {
-      operating_system: 'Windows',
-      url: document.getElementById('ytdl-url-field').value + "",
-      output_path: document.getElementById('ytdl-output-field').value + "",
-      make_folder:false,
-      new_folder_name: '',
-      is_playlist:false,
-      chosen_formats: ['best']
-    },
-  });
+  }
+  console.log(output_val);
+  var xhr = new XMLHttpRequest();
+  let req_info = {
+    operating_system: 'Windows',
+    apiKey: document.getElementById('liq-api-key').value,
+    url: document.getElementById('ytdl-url-field').value,
+    output_path: output_val,
+    make_folder:false,
+    new_folder_name: '',
+    is_playlist:false,
+    chosen_formats: {id: document.getElementById('ytdl-url-field').value, format: 'best'}
+  }
+  xhr.open("GET", 'http://' + document.getElementById('liq-ip-addy').value + "/liquid-dl/youtubedl/chrome-extension?" + jQuery.param(req_info), true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      // JSON.parse does not evaluate the attacker's scripts.
+    //  var resp = JSON.parse(xhr.responseText);
+    document.getElementById('liq-message-prompt').innerHTML = xhr.responseText;
+    }
+  }
+
+  xhr.send(JSON.stringify(req_info));
 }
 
 

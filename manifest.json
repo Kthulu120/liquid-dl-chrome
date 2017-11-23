@@ -4,7 +4,7 @@
   "name": "Liquid-dl",
   "description": "This extension allows the user to change the background color of the current page.",
   "version": "0.2",
-  "content_security_policy":"script-src 'self' http://10.181.56.192:8000/*; object-src 'self'",
+  "content_security_policy":"script-src 'self' http://ipadress.com:8000/*; object-src 'self'",
   "browser_action": {
     "default_icon": "liq_icon.png",
     "default_popup": "popup.html"
